@@ -10,6 +10,9 @@ import ActionCable.Msg as ACMsg
 
 -- MODEL
 
+type alias Flags =
+    { environment : String }
+
 
 type alias Model =
     { cable :
@@ -21,10 +24,20 @@ type alias Model =
 -- INIT
 
 
-init : ( Model, Cmd Msg )
-init =
+server : Flags -> String
+server {environment} =
+  case Debug.log "ENVIRONMENT" environment of
+    "production" ->
+      "space.fail"
+
+    _ ->
+      "localhost:3000"
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
     ( { cable =
-            AC.initCable "ws://localhost:3000/cable"
+            AC.initCable ("ws://" ++ (server flags) ++ "/cable")
                 |> AC.onDidReceiveData (Just DataReceived)
                 |> AC.onWelcome (Just OnWelcome)
                 |> AC.withDebug True
@@ -110,9 +123,9 @@ subscriptions model =
 -- MAIN
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update
