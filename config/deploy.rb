@@ -4,6 +4,8 @@ lock "~> 3.10.0"
 set :application, "ksp-rails"
 set :repo_url, "git@github.com:listrophy/ksp-rails.git"
 
+set :rvm_ruby_version, "ruby-2.4.1@ksp-rails"
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
