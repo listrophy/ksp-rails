@@ -6,6 +6,16 @@ set :repo_url, "git@github.com:listrophy/ksp-rails.git"
 
 set :rvm_ruby_version, "ruby-2.4.1@ksp-rails"
 
+set :unicorn_config_path, '/etc/unicorn.conf'
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+  task :restart do
+    on roles(:app) do |host|
+      execute(:sudo, '/usr/local/bin/restart-unicorn')
+    end
+  end
+end
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -20,7 +30,7 @@ set :deploy_to, "/home/rails/#{fetch :application}"
 # set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
 
 # Default value for :pty is false
-# set :pty, true
+set :pty, true
 
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml", "config/secrets.yml"
