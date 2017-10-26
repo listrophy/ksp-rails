@@ -10,6 +10,9 @@ import Models exposing (..)
 import Messages exposing (..)
 import HoverView exposing (hoverView)
 import Material
+import Material.Layout as Layout
+import Material.Color as Color
+import Material.Options as Options exposing (css)
 
 
 -- INIT
@@ -39,7 +42,7 @@ init flags =
       , ksp = NotActive
       , mdl = Material.model
       }
-    , Cmd.none
+    , Layout.sub0 Mdl
     )
 
 
@@ -47,31 +50,77 @@ init flags =
 -- VIEW
 
 
+boxed : List (Options.Property a b)
+boxed =
+    [ css "margin" "auto"
+    , css "padding-left" "8%"
+    , css "padding-right" "8%"
+    ]
+
+
 view : Model -> Html Msg
-view { ksp } =
+view model =
     let
         subview =
-            case ksp of
+            case model.ksp of
                 NotActive ->
                     text "Not Active"
 
-                Hover model ->
-                    hoverView model
+                Hover model_ ->
+                    hoverView model_
 
-                Orbit model ->
-                    orbitView model
+                Orbit model_ ->
+                    orbitView model_
 
-                Crash model ->
-                    crashView model
+                Crash model_ ->
+                    crashView model_
     in
-        div []
-            [ header
-                []
-                [ h1 [ style [ ( "display", "flex" ), ( "justify-content", "center" ) ] ]
-                    [ text "Hello KRW!" ]
-                ]
-            , main_ [] [ subview ]
+        Layout.render Mdl
+            model.mdl
+            []
+            { header = myHeader model
+            , drawer = []
+            , tabs = ( [], [] )
+            , main = [ mainWrapper subview ]
+            }
+
+
+mainWrapper : Html Msg -> Html Msg
+mainWrapper contents =
+    Options.div boxed
+        [ Options.styled Html.h1
+            [ Color.text Color.primary ]
+            [ text "Telemetry" ]
+        , contents
+        ]
+
+
+myHeader : Model -> List (Html Msg)
+myHeader model =
+    let
+        stateStr =
+            case model.ksp of
+                NotActive ->
+                    "Not Active"
+
+                Hover _ ->
+                    "Project Mercury: Hover"
+
+                Orbit _ ->
+                    "Project Gemini: Orbit"
+
+                Crash _ ->
+                    "Project Apollo: To The Mun"
+    in
+        [ Layout.row
+            [ css "transition" "height 333ms ease-in-out 0s"
             ]
+            [ Layout.title [] [ text "kerbal_space_program.rb" ]
+            , Layout.spacer
+            , Layout.navigation []
+                [ text stateStr ]
+            ]
+        ]
 
 
 orbitView : List OrbitModel -> Html Msg
@@ -220,6 +269,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ AC.listen CableMsg model.cable
+        , Layout.subs Mdl model.mdl
         ]
 
 
