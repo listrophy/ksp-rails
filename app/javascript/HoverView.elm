@@ -10,6 +10,11 @@ import Colors
 import Formatting as F exposing (roundTo, print, (<>))
 
 
+floatLabel : String -> Float -> String
+floatLabel title num =
+    print (F.s (title ++ ": ") <> roundTo 1) num
+
+
 maxPoints : Int
 maxPoints =
     30
@@ -59,7 +64,7 @@ altitudeChart models =
                     "Altitude: ?"
 
                 Just { altitude } ->
-                    print (F.s "Altitude: " <> roundTo 1) altitude
+                    floatLabel "Altitude" altitude
     in
         div []
             [ h2 [] [ text altStr ]
@@ -78,4 +83,14 @@ altitudeChart models =
 hoverView : List HoverModel -> Html Msg
 hoverView models =
     div [ A.style [ ( "height", "300px" ), ( "width", "400px" ) ] ]
-        [ altitudeChart models ]
+        [ altitudeChart models
+        , models
+            |> List.head
+            |> Maybe.map fuelChart
+            |> Maybe.withDefault (text "")
+        ]
+
+
+fuelChart : HoverModel -> Html Msg
+fuelChart { fuel } =
+    h2 [] [ text <| floatLabel "Fuel" fuel ]
