@@ -9,6 +9,7 @@ import ActionCable.Msg as ACMsg
 import Models exposing (..)
 import Messages exposing (..)
 import HoverView exposing (hoverView)
+import OrbitView exposing (orbitView)
 import Material
 import Material.Layout as Layout
 import Material.Color as Color
@@ -123,11 +124,6 @@ myHeader model =
         ]
 
 
-orbitView : List OrbitModel -> Html Msg
-orbitView model =
-    text "orbiting"
-
-
 crashView : List CrashModel -> Html Msg
 crashView model =
     text "crashing"
@@ -170,8 +166,11 @@ orbitDecoder : JD.Decoder KspPoint
 orbitDecoder =
     let
         subDecoder =
-            JD.map OrbitModel
-                (JD.field "throttle" JD.float)
+            JD.map4 OrbitModel
+                (JD.field "altitude" JD.float)
+                (JD.field "speed" JD.float)
+                (JD.field "pitch" JD.float)
+                (JD.field "stage" JD.string)
     in
         dataDecoder "orbit" subDecoder
             |> JD.map OrbitPoint
@@ -181,8 +180,13 @@ crashDecoder : JD.Decoder KspPoint
 crashDecoder =
     let
         subDecoder =
-            JD.map CrashModel
+            JD.map6 CrashModel
                 (JD.field "throttle" JD.float)
+                (JD.field "periapsis" JD.float)
+                (JD.field "apoapsis" JD.float)
+                (JD.field "stage" JD.string)
+                (JD.field "orbitingBody" JD.string)
+                (JD.field "warpFactor" JD.int)
     in
         dataDecoder "crash" subDecoder
             |> JD.map CrashPoint

@@ -36,8 +36,18 @@ type alias HoverModel =
 
 
 type alias OrbitModel =
-    { throttle : Float }
+    { altitude : Float
+    , speed : Float
+    , pitch : Float
+    , stage : String
+    }
 
 
 type alias CrashModel =
-    { throttle : Float }
+    { throttle : Float
+    , periapsis : Float
+    , apoapsis : Float
+    , stage : String
+    , orbitingBody : String
+    , warpFactor : Int
+    }

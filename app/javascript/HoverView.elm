@@ -51,8 +51,8 @@ altitudeCustomizations models =
         , horizontalAxis = myHorizontalAxis models
         , toRangeHighest = max <| toFloat maxPoints
         , toRangeLowest = min 0
-        , toDomainHighest = max 250
-        , toDomainLowest = min 70
+        , toDomainHighest = max 350
+        , toDomainLowest = min 100
     }
 
 
@@ -103,7 +103,7 @@ altitudeChart models =
                     , customSeries
                         normalAxis
                         (Linear Nothing [ Attr.stroke "#333333" ])
-                        (always <| [ clear 0 180, clear (toFloat maxPoints) 180 ])
+                        (always <| [ clear 0 250, clear (toFloat maxPoints) 250 ])
                     ]
                     (modelAltitudesToXY models)
                 ]

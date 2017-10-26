@@ -5,6 +5,9 @@ class KspChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
+    if user_can_publish?
+      ActionCable.server.broadcast("ksp", {"nothing" => {}})
+    end
   end
 
   def hover(data)
@@ -16,13 +19,13 @@ class KspChannel < ApplicationCable::Channel
   def orbit(data)
     return unless user_can_publish?
 
-    ActionCable.server.broadcast("ksp", {"orbit" => data})
+    ActionCable.server.broadcast("ksp", {"orbit" => OrbitData.new(data).to_json})
   end
 
   def crash(data)
     return unless user_can_publish?
 
-    ActionCable.server.broadcast("ksp", {"crash" => data})
+    ActionCable.server.broadcast("ksp", {"crash" => CrashData.new(data).to_json})
   end
 
   private
