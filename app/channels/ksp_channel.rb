@@ -5,13 +5,12 @@ class KspChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    puts "current_user: #{current_user}"
   end
 
   def hover(data)
     return unless user_can_publish?
 
-    ActionCable.server.broadcast("ksp", {"hover" => data})
+    ActionCable.server.broadcast("ksp", {"hover" => HoverData.new(data).to_json})
   end
 
   def orbit(data)
@@ -28,7 +27,6 @@ class KspChannel < ApplicationCable::Channel
 
   private
   def user_can_publish?
-    puts "testing if user can publish: #{current_user.inspect}"
     current_user == :publisher
   end
 end
