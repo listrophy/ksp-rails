@@ -10,35 +10,16 @@ import Colors
 import Formatting as F exposing (roundTo, print, (<>))
 
 
+maxPoints : Int
+maxPoints =
+    30
+
+
 modelsToXY : List HoverModel -> List ( Float, Float )
 modelsToXY models =
     models
-        |> List.take 20
+        |> List.take maxPoints
         |> List.indexedMap (\idx x -> ( toFloat idx, x.altitude ))
-
-
-{--}
-mySeries_ : (List ( Float, Float ) -> List (DataPoint msg)) -> Series (List ( Float, Float )) msg
-mySeries_ models =
-    { axis = normalAxis
-    , interpolation = Linear Nothing [ Attr.stroke Colors.pinkStroke ]
-    , toDataPoints = models
-    }
-
-
-
-{--
-    customSeries
-        myAxis
-        myInterpolation
-        (List.map (\( x, y ) -> clear x y))
---}
-
-
-mySeries : Series (List ( Float, Float )) msg
-mySeries =
-    List.map (\( x, y ) -> clear x y)
-        |> mySeries_
 
 
 myCustomizations : List HoverModel -> PlotCustomizations msg
@@ -47,7 +28,7 @@ myCustomizations models =
         | height = 300
         , width = 400
         , horizontalAxis = myHorizontalAxis models
-        , toRangeHighest = max 20
+        , toRangeHighest = max <| toFloat maxPoints
         , toRangeLowest = min 0
         , toDomainHighest = max 250
         , toDomainLowest = min 70
@@ -63,10 +44,8 @@ myHorizontalAxis models =
             , ticks = List.map simpleTick (decentPositions summary)
             , labels =
                 [ LabelCustomizations (viewLabel [] "now") 0.0
-                , LabelCustomizations (viewLabel [] "+20") 20.0
+                , LabelCustomizations (viewLabel [] ("+" ++ toString maxPoints)) (toFloat maxPoints)
                 ]
-
-            --, labels = List.map simpleLabel (decentPositions summary)
             , flipAnchor = False
             }
 
@@ -80,17 +59,18 @@ altitudeChart models =
                     "Altitude: ?"
 
                 Just { altitude } ->
-                    let
-                        fmt =
-                            F.s "Altitude: " <> roundTo 1
-                    in
-                        print fmt altitude
+                    print (F.s "Altitude: " <> roundTo 1) altitude
     in
         div []
             [ h2 [] [ text altStr ]
             , viewSeriesCustom
                 (myCustomizations models)
-                [ mySeries ]
+                [ line <| List.map (\( x, y ) -> clear x y)
+                , customSeries
+                    normalAxis
+                    (Linear Nothing [ Attr.stroke "#333333" ])
+                    (always <| [ clear 0 180, clear (toFloat maxPoints) 180 ])
+                ]
                 (modelsToXY models)
             ]
 
@@ -99,9 +79,3 @@ hoverView : List HoverModel -> Html Msg
 hoverView models =
     div [ A.style [ ( "height", "300px" ), ( "width", "400px" ) ] ]
         [ altitudeChart models ]
-
-
-
--- models
---     |> List.map (\x -> div [] [ text <| toString x.altitude ])
---     |> div []
