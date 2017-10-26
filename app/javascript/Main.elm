@@ -9,6 +9,7 @@ import ActionCable.Msg as ACMsg
 import Models exposing (..)
 import Messages exposing (..)
 import HoverView exposing (hoverView)
+import Material
 
 
 -- INIT
@@ -36,6 +37,7 @@ init flags =
                 |> AC.onWelcome (Just OnWelcome)
                 |> AC.withDebug True
       , ksp = NotActive
+      , mdl = Material.model
       }
     , Cmd.none
     )
@@ -149,6 +151,9 @@ update msg model =
         CableMsg msg_ ->
             AC.update msg_ model.cable
                 |> (\( cable, cmd ) -> ( { model | cable = cable }, cmd ))
+
+        Mdl message_ ->
+            Material.update Mdl message_ model
 
 
 dataReceived : JD.Value -> Model -> Model

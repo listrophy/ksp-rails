@@ -1,12 +1,14 @@
 module Models exposing (..)
 
 import ActionCable as AC
+import Material
 import Messages exposing (..)
 
 
 type alias Model =
     { cable : AC.ActionCable Msg
     , ksp : KSP
+    , mdl : Material.Model
     }
 
 
