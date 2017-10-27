@@ -1,24 +1,11 @@
-# README
+# KSP Rails
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A simple, ActionCable-based Rails app specifically designed to integrate with [these scripts](https://github.com/listrophy/kerbal_control).
 
-Things you may want to cover:
+## License
 
-* Ruby version
+See LICENSE
 
-* System dependencies
+## Author
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Brad Grzesiak, [Bendyworks](https://bendyworks.com)
