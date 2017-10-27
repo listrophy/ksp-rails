@@ -25,6 +25,11 @@ listItemFloat title value =
     listItemString title <| formatFloat value
 
 
+listItemInt : String -> Int -> Html Msg
+listItemInt title value =
+    listItemString title <| toString value
+
+
 listItemString : String -> String -> Html Msg
 listItemString title value =
     L.li []
@@ -50,7 +55,7 @@ speedChart models =
                         [ listItemFloat "Altitude" model.altitude
                         , listItemFloat "Speed" model.speed
                         , listItemFloat "Pitch" model.pitch
-                        , listItemString "Stage" model.stage
+                        , listItemInt "Stage" model.stage
                         ]
                     ]
                 ]

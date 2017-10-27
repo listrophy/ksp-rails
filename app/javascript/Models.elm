@@ -39,7 +39,7 @@ type alias OrbitModel =
     { altitude : Float
     , speed : Float
     , pitch : Float
-    , stage : String
+    , stage : Int
     }
 
 
@@ -47,7 +47,7 @@ type alias CrashModel =
     { throttle : Float
     , periapsis : Float
     , apoapsis : Float
-    , stage : String
+    , stage : Int
     , orbitingBody : String
     , warpFactor : Int
     }

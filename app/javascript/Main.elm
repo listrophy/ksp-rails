@@ -10,10 +10,12 @@ import Models exposing (..)
 import Messages exposing (..)
 import HoverView exposing (hoverView)
 import OrbitView exposing (orbitView)
+import CrashView exposing (crashView)
 import Material
 import Material.Layout as Layout
 import Material.Color as Color
 import Material.Options as Options exposing (css)
+import Material.Spinner as Loading
 
 
 -- INIT
@@ -75,6 +77,21 @@ view model =
 
                 Crash model_ ->
                     crashView model_
+
+        isConnected =
+            AC.status model.cable == AC.Connected
+
+        spinner =
+            Options.div
+                [ css "width" "100%"
+                , css "padding-top" "10em"
+                , css "display" "flex"
+                , css "justify-content" "center"
+                , css "align-items" "center"
+                ]
+                [ Loading.spinner
+                    [ Loading.active True ]
+                ]
     in
         Layout.render Mdl
             model.mdl
@@ -82,7 +99,12 @@ view model =
             { header = myHeader model
             , drawer = []
             , tabs = ( [], [] )
-            , main = [ mainWrapper subview ]
+            , main =
+                [ if isConnected then
+                    mainWrapper subview
+                  else
+                    spinner
+                ]
             }
 
 
@@ -122,11 +144,6 @@ myHeader model =
                 [ text stateStr ]
             ]
         ]
-
-
-crashView : List CrashModel -> Html Msg
-crashView model =
-    text "crashing"
 
 
 
@@ -170,9 +187,10 @@ orbitDecoder =
                 (JD.field "altitude" JD.float)
                 (JD.field "speed" JD.float)
                 (JD.field "pitch" JD.float)
-                (JD.field "stage" JD.string)
+                (JD.field "stage" JD.int)
     in
         dataDecoder "orbit" subDecoder
+            |> Debug.log "orbit result"
             |> JD.map OrbitPoint
 
 
@@ -184,7 +202,7 @@ crashDecoder =
                 (JD.field "throttle" JD.float)
                 (JD.field "periapsis" JD.float)
                 (JD.field "apoapsis" JD.float)
-                (JD.field "stage" JD.string)
+                (JD.field "stage" JD.int)
                 (JD.field "orbitingBody" JD.string)
                 (JD.field "warpFactor" JD.int)
     in

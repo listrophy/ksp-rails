@@ -1,4 +1,4 @@
-class OrbitData
+class CrashData
 
   ATTRS = %i(throttle periapsis apoapsis stage orbitingBody warpFactor)
 

@@ -52,10 +52,10 @@ speedChart models =
                 ]
                 [ Card.text []
                     [ L.ul []
-                        [ listItemFloat "Throttle" model.throttle
+                        [ listItemFloat "Throttle" (100.0 * model.throttle)
                         , listItemFloat "Periapsis" model.periapsis
                         , listItemFloat "Apoapsis" model.apoapsis
-                        , listItemString "Stage" model.stage
+                        , listItemInt "Stage" model.stage
                         , listItemString "Orbiting" model.orbitingBody
                         , listItemInt "Warp Factor" model.warpFactor
                         ]
