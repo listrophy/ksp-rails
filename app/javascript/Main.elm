@@ -32,7 +32,7 @@ server { environment } =
             "localhost:3000"
 
         _ ->
-            "space.fail"
+            "space.fail:3000"
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -67,7 +67,7 @@ view model =
         subview =
             case model.ksp of
                 NotActive ->
-                    text "Not Active"
+                    text ""
 
                 Hover model_ ->
                     hoverView model_
@@ -95,31 +95,23 @@ view model =
     in
         Layout.render Mdl
             model.mdl
-            []
-            { header = myHeader model
+            [ Layout.fixedHeader
+            , Layout.scrolling
+            ]
+            { header = myHeader
             , drawer = []
             , tabs = ( [], [] )
             , main =
                 [ if isConnected then
-                    mainWrapper subview
+                    mainWrapper model subview
                   else
                     spinner
                 ]
             }
 
 
-mainWrapper : Html Msg -> Html Msg
-mainWrapper contents =
-    Options.div boxed
-        [ Options.styled Html.h1
-            [ Color.text Color.primary ]
-            [ text "Telemetry" ]
-        , contents
-        ]
-
-
-myHeader : Model -> List (Html Msg)
-myHeader model =
+mainWrapper : Model -> Html Msg -> Html Msg
+mainWrapper model contents =
     let
         stateStr =
             case model.ksp of
@@ -135,15 +127,22 @@ myHeader model =
                 Crash _ ->
                     "Project Apollo: To The Mun"
     in
-        [ Layout.row
-            [ css "transition" "height 333ms ease-in-out 0s"
-            ]
-            [ Layout.title [] [ text "kerbal_space_program.rb" ]
-            , Layout.spacer
-            , Layout.navigation []
+        Options.div boxed
+            [ Options.styled Html.h1
+                [ Color.text Color.primary ]
                 [ text stateStr ]
+            , contents
             ]
+
+
+myHeader : List (Html Msg)
+myHeader =
+    [ Layout.row
+        [ css "transition" "height 333ms ease-in-out 0s"
         ]
+        [ Layout.title [] [ text "kerbal_space_program.rb" ]
+        ]
+    ]
 
 
 

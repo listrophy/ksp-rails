@@ -13,6 +13,30 @@ import Material.Elevation as Elevation
 import Material.Options as Options exposing (css)
 import Material.Grid as G
 import Material.List as L
+import Dict exposing (Dict)
+
+
+stageNames : Dict Int String
+stageNames =
+    Dict.fromList
+        [ ( 0, "determining insertion burn delta v" )
+        , ( 1, "determining insertion burn location" )
+        , ( 2, "waiting for insertion burn far" )
+        , ( 3, "waiting for insertion burn mid" )
+        , ( 4, "waiting for insertion burn near" )
+        , ( 5, "insertion burning" )
+        , ( 6, "finalizing insertion burn" )
+        , ( 7, "transmunar orbit" )
+        , ( 8, "outer munar orbit" )
+        , ( 9, "mid munar orbit" )
+        , ( 10, "final approach" )
+        ]
+
+
+stageName : Int -> String
+stageName i =
+    Dict.get i stageNames
+        |> Maybe.withDefault "?"
 
 
 formatFloat : Float -> String
@@ -55,7 +79,7 @@ speedChart models =
                         [ listItemFloat "Throttle" (100.0 * model.throttle)
                         , listItemFloat "Periapsis" model.periapsis
                         , listItemFloat "Apoapsis" model.apoapsis
-                        , listItemInt "Stage" model.stage
+                        , listItemString "Stage" (stageName model.stage)
                         , listItemString "Orbiting" model.orbitingBody
                         , listItemInt "Warp Factor" model.warpFactor
                         ]

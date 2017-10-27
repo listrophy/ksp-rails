@@ -10,7 +10,7 @@ import Colors
 import Formatting as F exposing (roundTo, print, (<>))
 import Material.Card as Card
 import Material.Elevation as Elevation
-import Material.Options as Options exposing (css)
+import Material.Options as Options exposing (css, cs)
 import Material.Grid as G
 
 
@@ -213,6 +213,7 @@ throttleView models =
                         , css "display" "flex"
                         , css "height" "24px"
                         , css "margin-right" "2em"
+                        , cs "throttle-gauge"
                         ]
                         [ Options.div
                             [ css "background-color" "green"
@@ -234,13 +235,14 @@ throttleView models =
 hoverView : List HoverModel -> Html Msg
 hoverView models =
     G.grid []
-        [ G.cell [ G.size G.All 5 ] [ altitudeChart models ]
-        , G.cell [ G.size G.All 5 ] [ pidChart models ]
-        , G.cell [ G.size G.All 2 ]
+        [ G.cell [ G.size G.All 5, G.size G.Phone 12 ] [ altitudeChart models ]
+        , G.cell [ G.size G.All 5, G.size G.Phone 12 ] [ pidChart models ]
+        , G.cell [ G.size G.All 2, G.size G.Phone 12 ]
             [ models
                 |> List.head
                 |> Maybe.map fuelChart
                 |> Maybe.withDefault (text "")
             ]
         , G.cell [ G.size G.All 12 ] [ throttleView models ]
+        , G.cell [ G.size G.All 12 ] [ br [] [], br [] [], br [] [] ]
         ]

@@ -13,3 +13,13 @@
  *= require_tree .
  *= require_self
  */
+
+.mdl-list__item-secondary-content {
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .throttle-gauge {
+    display: none !important;
+  }
+}

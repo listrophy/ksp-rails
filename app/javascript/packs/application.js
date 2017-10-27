@@ -2,13 +2,18 @@
 // head of your layout file, like app/views/layouts/application.html.erb.
 // It will render "Hello Elm!" within the page.
 
-import Elm from '../Main'
+import Elm from "../Main";
 
-document.addEventListener('DOMContentLoaded', () => {
-  const target = document.createElement('div')
+var isLocalhost = false;
+if (document.location.hostname === "localhost") {
+  isLocalhost = true;
+}
 
-  document.body.appendChild(target)
+document.addEventListener("DOMContentLoaded", () => {
+  const target = document.createElement("div");
+
+  document.body.appendChild(target);
   Elm.Main.embed(target, {
-    environment: process.env.RAILS_ENV
-  })
-})
+    environment: isLocalhost ? "development" : "production" //process.env.RAILS_ENV
+  });
+});
